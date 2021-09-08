@@ -1,0 +1,6 @@
+[submodule "services/poc1"]
+	path = services/poc1
+	url = git@github.com:hemi1986/poc1.git
+[submodule "services/poc2"]
+	path = services/poc2
+	url = git@github.com:hemi1986/poc2.git
