@@ -1,0 +1,51 @@
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: poc-peer-policy
+  namespace: default
+spec:
+  mtls:
+    mode: STRICT
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: default-deny
+  namespace: default
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-nothing
+  namespace: default
+spec:
+  {}
+---
+apiVersion: security.istio.io/v1beta1
+kind: RequestAuthentication
+metadata:
+  name: "jwt-ingress"
+  namespace: istio-system
+spec:
+  selector:
+    matchLabels:
+      istio: ingressgateway
+  jwtRules:
+  - issuer: "issuer"
+    jwksUri: "issuer/.well-known/jwks.json"
+    forwardOriginalToken: true
+---
+apiVersion: security.istio.io/v1beta1
+kind: RequestAuthentication
+metadata:
+  name: "jwt-default"
+  namespace: default
+spec:
+  jwtRules:
+  - issuer: "issuer"
+    jwksUri: "issuer/.well-known/jwks.json"
